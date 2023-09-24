@@ -17,39 +17,58 @@ class Program{
 
         switch(command){
             case "--insert":
-            
+                Console.WriteLine("Command format: insert <key> <value>");
+
+                int keyIns = int.Parse(args[1]);
+                string valueIns = args[2];
+                database[keyIns] = new Object(valueIns);
+                Console.WriteLine("inserted");
                 break;
             case "remove":
-            
+                Console.WriteLine("Command format: remove <key>");
+
+                int keyRem = int.Parse(args[1]);
+                if (database.ContainsKey(keyRem))
+                {
+                    database.Remove(keyRem);
+                    Console.WriteLine("removed");
+                }
+                else
+                {
+                    Console.WriteLine("key not found");
+                }
                 break;
             case "search":
+                int keySea = int.Parse(args[1]);
+                if (database.ContainsKey(keySea))
+                {
+                    Console.WriteLine("Found object: " + database[keySea]);
+                }
+                else
+                {
+                    Console.WriteLine("key not found");
+                }
             
                 break;
             case "update":
+                int keyUp = int.Parse(args[1]);
+                string valueUp = args[2];
+
+                if (database.ContainsKey(keyUp))
+                {
+                    database[keyUp] = new Object(valueUp);
+                    Console.WriteLine("updated");
+                }
+                else
+                {
+                    Console.WriteLine("key not found");
+                }
             
                 break;
             default:
                 Console.WriteLine("Invalid Command. Avaliable Commands: --insert, remove, search, update");
                 break;
         }
-    }
-    public void Insert(int key, string value){
-
-    }
-    public void Remove(int key){
-        
-    }
-    public void Search(string[] args){
-        /*Console.WriteLine("Commad format: search <key>");
-
-        int keySearch = int.Parse(args[1]);
-
-        if(database.ContainsKey(keySearch)){
-
-        }*/
-    }
-    public void Update(int key){
-        
     }
 }
 class Object
