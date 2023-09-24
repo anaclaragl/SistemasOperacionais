@@ -17,7 +17,7 @@ class Program{
 
         switch(command){
             case "--insert":
-
+            
                 break;
             case "remove":
             
