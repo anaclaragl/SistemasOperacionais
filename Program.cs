@@ -23,6 +23,7 @@ class Program{
                 string valueIns = args[2];
                 database[keyIns] = new Object(valueIns);
                 Console.WriteLine("inserted");
+                SaveData();
                 break;
             case "remove":
                 Console.WriteLine("Command format: remove <key>");
@@ -37,6 +38,7 @@ class Program{
                 {
                     Console.WriteLine("key not found");
                 }
+                SaveData();
                 break;
             case "search":
                 int keySea = int.Parse(args[1]);
@@ -48,7 +50,7 @@ class Program{
                 {
                     Console.WriteLine("key not found");
                 }
-            
+                SaveData();
                 break;
             case "update":
                 int keyUp = int.Parse(args[1]);
@@ -63,13 +65,36 @@ class Program{
                 {
                     Console.WriteLine("key not found");
                 }
-            
+                SaveData();
                 break;
             default:
                 Console.WriteLine("Invalid Command. Avaliable Commands: --insert, remove, search, update");
                 break;
         }
     }
+
+/*Prototipo/Tentativa do LoadData
+
+    /private void LoadData(string dbilePath){
+        database = new Dictionary<int, Object>();
+
+        if (File.Exists(dbfilePath)){
+            string[] writer = File.ReadAllLines(dbfilePath);
+
+            foreach (string entry in writer){
+
+            }
+        }
+    }*/
+
+    private static void SaveData(){
+        List<string> writer = new List<string>();
+        foreach (var process in database){
+            writer.Add(process.Key + "," + process.Value);
+        }
+        File.WriteAllLines(filePath, writer);
+    }
+
 }
 class Object
 {
@@ -83,14 +108,6 @@ class Object
     public override string ToString()
     {
         return value;
-    }
-
-    private void SaveData(){
-
-    }
-
-    private void LoadData(){
-
     }
     
 }
