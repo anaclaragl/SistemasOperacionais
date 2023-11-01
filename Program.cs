@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 
 class Program{
-    static void Main(string[] args){
-        Dictionary<int, Object> database = new Dictionary<int, Object>();
+    static Dictionary<int, string> database = new Dictionary<int, string>();
+
+    static string filePath = "simpledb.txt";
+
+    static void Main(string[] args)
+    {
 
         if (args.Length == 0)
         {
@@ -13,59 +17,36 @@ class Program{
         }
 
         string command = args[0].ToLower();
-        //ToLower = deixa o que foi digitado em lower case
+        string[] inputs = args[1].Split(',');
+        int key = Convert.ToInt32(inputs[0]);
+        string value = inputs[1];
 
-        switch(command){
+        switch (command)
+        {
             case "--insert":
-                Console.WriteLine("Command format: insert <key> <value>");
+                if (key >= 0 && value != null)
+                {
 
-                int keyIns = int.Parse(args[1]);
-                string valueIns = args[2];
-                database[keyIns] = new Object(valueIns);
-                Console.WriteLine("inserted");
-                SaveData();
+                    Insert(key, value);
+                }
                 break;
             case "remove":
-                Console.WriteLine("Command format: remove <key>");
-
-                int keyRem = int.Parse(args[1]);
-                if (database.ContainsKey(keyRem))
+                if (key >= 0)
                 {
-                    database.Remove(keyRem);
-                    Console.WriteLine("removed");
+                    Remove(key);
                 }
-                else
-                {
-                    Console.WriteLine("key not found");
-                }
-                SaveData();
                 break;
             case "search":
-                int keySea = int.Parse(args[1]);
-                if (database.ContainsKey(keySea))
+                if (key >= 0)
                 {
-                    Console.WriteLine("Found object: " + database[keySea]);
+                    Search(key);
                 }
-                else
-                {
-                    Console.WriteLine("key not found");
-                }
-                SaveData();
                 break;
             case "update":
-                int keyUp = int.Parse(args[1]);
-                string valueUp = args[2];
-
-                if (database.ContainsKey(keyUp))
+                if (key >= 0)
                 {
-                    database[keyUp] = new Object(valueUp);
-                    Console.WriteLine("updated");
+                    Update(key, value);
                 }
-                else
-                {
-                    Console.WriteLine("key not found");
-                }
-                SaveData();
                 break;
             default:
                 Console.WriteLine("Invalid Command. Avaliable Commands: --insert, remove, search, update");
@@ -73,41 +54,48 @@ class Program{
         }
     }
 
-/*Prototipo/Tentativa do LoadData
-
-    /private void LoadData(string dbilePath){
-        database = new Dictionary<int, Object>();
-
-        if (File.Exists(dbfilePath)){
-            string[] writer = File.ReadAllLines(dbfilePath);
-
-            foreach (string entry in writer){
-
-            }
-        }
-    }*/
-
-    private static void SaveData(){
-        List<string> writer = new List<string>();
-        foreach (var process in database){
-            writer.Add(process.Key + "," + process.Value);
-        }
-        File.WriteAllLines(filePath, writer);
-    }
-
-}
-class Object
-{
-    public string value { get; set; }
-
-    public Object(string Value)
+    static void Insert(int key, string value)
     {
-        value = Value;
+        database.Add(key, value);
+        SaveData(filePath, database);
+        Console.WriteLine("inserted");
     }
 
-    public override string ToString()
+    static void Remove(int key)
     {
-        return value;
+        if (database.ContainsKey(key))
+        {
+            database.Remove(key);
+            Console.WriteLine("removed");
+        }
+        else
+        {
+            Console.WriteLine("key not found");
+        }
     }
-    
+
+    static void Search(int key)
+    {
+        if (database.ContainsKey(key))
+        {
+            Console.WriteLine("Found object: " + database[key]);
+        }
+        else
+        {
+            Console.WriteLine("key not found");
+        }
+    }
+
+    static void Update(int key, string newValue)
+    {
+        if (database.ContainsKey(key))
+        {
+            database[key] = newValue;
+            Console.WriteLine("updated");
+        }
+        else
+        {
+            Console.WriteLine("key not found");
+        }
+    }
 }
