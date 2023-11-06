@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Henri\\OneDrive\\Área de Trabalho\\SistemasOperacionais\\SistemasOperacionais\\SistemasOperacionais.csproj": {}
+    "C:\\Users\\Henri\\OneDrive\\Área de Trabalho\\SistemasOperacionais\\SistemasOperacionais\\SistemasOperacionais.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Henri\\OneDrive\\Área de Trabalho\\SistemasOperacionais\\SistemasOperacionais\\SistemasOperacionais.csproj": {
+    "C:\\Users\\Henri\\OneDrive\\Área de Trabalho\\SistemasOperacionais\\SistemasOperacionais\\SistemasOperacionais.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Henri\\OneDrive\\Área de Trabalho\\SistemasOperacionais\\SistemasOperacionais\\SistemasOperacionais.csproj",
+        "projectUniqueName": "C:\\Users\\Henri\\OneDrive\\Área de Trabalho\\SistemasOperacionais\\SistemasOperacionais\\SistemasOperacionais.csproj",
         "projectName": "SistemasOperacionais",
-        "projectPath": "c:\\Users\\Henri\\OneDrive\\Área de Trabalho\\SistemasOperacionais\\SistemasOperacionais\\SistemasOperacionais.csproj",
+        "projectPath": "C:\\Users\\Henri\\OneDrive\\Área de Trabalho\\SistemasOperacionais\\SistemasOperacionais\\SistemasOperacionais.csproj",
         "packagesPath": "C:\\Users\\Henri\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Henri\\OneDrive\\Área de Trabalho\\SistemasOperacionais\\SistemasOperacionais\\obj\\",
+        "outputPath": "C:\\Users\\Henri\\OneDrive\\Área de Trabalho\\SistemasOperacionais\\SistemasOperacionais\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

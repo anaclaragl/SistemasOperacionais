@@ -2,100 +2,68 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-class Program{
-    static Dictionary<int, string> database = new Dictionary<int, string>();
+class Program{ //classe pricipal do programa
+    static void Main(string[] args){
 
-    static string filePath = "simpledb.txt";
+        string filePath = "simpledb.txt"; //arquivo de armazenamento dos dados
+        SimpleDB database = new SimpleDB(filePath); //nova instancia da classe SimpleDB
 
-    static void Main(string[] args)
-    {
-
-        if (args.Length == 0)
-        {
-            Console.WriteLine("Avaliable Commands: --insert, remove, search, update");
+        if (args.Length == 0){
             return;
         }
 
-        string command = args[0].ToLower();
-        string[] inputs = args[1].Split(',');
-        int key = Convert.ToInt32(inputs[0]);
-        string value = inputs[1];
+        try{
+            string command = args[0].ToLower(); //variavel que recebe os comandos
+            string[] inputs = args[1].Split(','); //divisao entre chave-valor, [0] -> chave, [1] -> valor
 
-        switch (command)
-        {
-            case "--insert":
-                if (key >= 0 && value != null)
-                {
-
-                    Insert(key, value);
-                }
-                break;
-            case "remove":
-                if (key >= 0)
-                {
-                    Remove(key);
-                }
-                break;
-            case "search":
-                if (key >= 0)
-                {
-                    Search(key);
-                }
-                break;
-            case "update":
-                if (key >= 0)
-                {
-                    Update(key, value);
-                }
-                break;
-            default:
-                Console.WriteLine("Invalid Command. Avaliable Commands: --insert, remove, search, update");
-                break;
-        }
-    }
-
-    static void Insert(int key, string value)
-    {
-        database.Add(key, value);
-        SaveData(filePath, database);
-        Console.WriteLine("inserted");
-    }
-
-    static void Remove(int key)
-    {
-        if (database.ContainsKey(key))
-        {
-            database.Remove(key);
-            Console.WriteLine("removed");
-        }
-        else
-        {
-            Console.WriteLine("key not found");
-        }
-    }
-
-    static void Search(int key)
-    {
-        if (database.ContainsKey(key))
-        {
-            Console.WriteLine("Found object: " + database[key]);
-        }
-        else
-        {
-            Console.WriteLine("key not found");
-        }
-    }
-
-    static void Update(int key, string newValue)
-    {
-        if (database.ContainsKey(key))
-        {
-            database[key] = newValue;
-            Console.WriteLine("updated");
-        }
-        else
-        {
-            Console.WriteLine("key not found");
+            switch(command){
+                /*uso de if para checar o tamanho correto de cada comando.
+                  EX: o uso do insert: <--insert> <key,value>,
+                  portanto inputs deve ter 2 de tamanho 
+                */
+                case "--insert": 
+                    if(inputs.Length != 2){
+                        Console.WriteLine("Wrong insert format. Try using: --insert key,value");
+                    }else{
+                        int key = Convert.ToInt32(inputs[0]);
+                        string value = inputs[1];
+                        database.Insert(key, value);
+                    }
+                    break;
+                case "remove":
+                    if(inputs.Length != 1){
+                        Console.WriteLine("Wrong insert format. Try using: remove key");
+                    }else{
+                        int key = Convert.ToInt32(inputs[0]);
+                        database.Remove(key);
+                    }
+                    break;
+                case "search":
+                    if(inputs.Length != 1){
+                        Console.WriteLine("Wrong insert format. Try using: search key");
+                    }else{
+                        int key = Convert.ToInt32(inputs[0]);
+                        database.Search(key);
+                    }
+                    break;
+                case "update":
+                    if(inputs.Length != 2){
+                        Console.WriteLine("Wrong insert format. Try using: update key,newValue");
+                    }else{
+                        int key = Convert.ToInt32(inputs[0]);
+                        string value = inputs[1];
+                        database.Insert(key, value);
+                    }
+                    break;
+                case "quit":
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Console.WriteLine("Invalid Command. Avaliable Commands: --insert, remove, search, update");
+                    break;
+            }
+        }catch(Exception e){
+            Console.WriteLine("ERROR: " + e.Message);
         }
     }
 }
