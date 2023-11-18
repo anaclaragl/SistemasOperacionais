@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
@@ -108,17 +107,6 @@ namespace databaseServer{
                     Console.WriteLine("Invalid Command. Avaliable Commands: --insert, remove, search, update");
                     break;
             }
-=======
-using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace databaseServer{
-    class Program{
-
-        static void Main(string[] args){
-            //Classe Main do Servidor
->>>>>>> d092c2c5511acf3a893afddfd547cc0feb5fe1bf
         }
     }
 }
