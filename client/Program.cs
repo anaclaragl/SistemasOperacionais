@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using MSMQ.Messaging;
-using System.Threading;
-using System.Text;
 
 namespace client{
 
     class Program{
         
-        const string mqPathClient = ".\\Private$\\ClientQueue"; 
-        const string mqPathServer = ".\\Private$\\SimpleDBQueue";
+        const string mqPathClient = ".\\Private$\\ClientQueue"; //queue do cliente
+        const string mqPathServer = ".\\Private$\\SimpleDBQueue"; //queue do server
         static void Main(string[] args){
 
             //verifica a existencia da queue do cliente
@@ -18,20 +14,15 @@ namespace client{
                 MessageQueue.Create(mqPathClient);
             }
 
-            while(true){
-
-                /*if (args.Length == 0){
-                    return;
-                }*/
-
                 Console.Write("//simpledb> ");
 
+                //comandos do cliente
                 string? entry = Console.ReadLine();
-                string[] inputs = entry.Split(' ');
+                string[] inputs = entry.Split(' '); //inputs[0] == comando; inputs[1] == chave,valor
 
                 string action = inputs[0].ToLower();
 
-                Command command = new Command();
+                Command command = new Command(); //nova instancia de um comando pra definir a acao
 
                 switch (action){
                     case "--insert":
@@ -54,14 +45,16 @@ namespace client{
                         break;
                 }
 
+                //ja define a key do comando, pois todo comando precisa de uma chave
                 string[] separateInput = inputs[1].Split(',');
                 command.key = Convert.ToInt32(separateInput[0]);
 
+                //checa se o o input tambem tem o valor e define o value do comando
                 if(separateInput.Length > 1){
                     command.value = separateInput[1];
                 }
 
-
+                //abertura e tipificacao das filas do servidor e cliente
                 MessageQueue messageQueueCli = new MessageQueue(mqPathClient){
                     Formatter = new XmlMessageFormatter(new Type[] { typeof(string) })
                 };
@@ -76,7 +69,7 @@ namespace client{
                     messageQueueServer.Send(msg);
                     Console.WriteLine("Sent!");
 
-                    string cliMsg = (string)messageQueueCli.Receive().Body;
+                    string cliMsg = (string)messageQueueCli.Receive().Body; //trasforma em string o body(que era do tipo Message)
                     Console.WriteLine("Response recieved!");
 
                     messageQueueCli.Close();
@@ -88,12 +81,9 @@ namespace client{
                 }
 
                 //deleta a fila do cliente
-                if (MessageQueue.Exists(mqPathClient))
-                {
+                if (MessageQueue.Exists(mqPathClient)){
                     MessageQueue.Delete(mqPathClient);
                 }
-
-            }
         }
     }
 }
