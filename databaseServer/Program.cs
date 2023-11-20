@@ -57,7 +57,7 @@ namespace databaseServer{
             thread.Start(); //inicializacao da thread
 
         }
-        Console.WriteLine("serve exited");
+        Console.WriteLine("server exited");
         Environment.Exit(0); //fecha o processo do terminal
     }
 
