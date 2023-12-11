@@ -6,19 +6,10 @@ using MSMQ.Messaging;
 using System.Threading;
 using Microsoft.Extensions.Caching.Memory;
 
-/*CICLO DE FUNCIONAMENTO DO MSMQ
-1. cliente chama um comando
-2. cliente manda pro mq
-3. server recebe o mq
-4. server executa o mq
-5. server manda a resposta de volta pro cliente
-*/
-
 class SimpleDB{ //classe do database do programa
     private Dictionary<int, string> database; //uso de dicionario para um banco de dados simples
     private string filePath;
     private Mutex mutex;
-
     private const string CacheKeyPrefix = "DBCache_"; //o prefixo que vem antes de cada dado pra evitar conflito
     private IMemoryCache cache; //interface que permite a manipulação na memoria cache
     
@@ -29,18 +20,27 @@ class SimpleDB{ //classe do database do programa
 
         cache = new MemoryCache(new MemoryCacheOptions()); //instnacia do memory cache
     }
-    
+
     public string Insert(int key, string value){ //metodo inserir no banco de dados
         mutex.WaitOne(); //bloqueia a thread ate receber um sinal
 
         try{
-            if (!database.ContainsKey(key)){
+
+            var cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) //expira em 10 minutos
+            };
+            cache.Set(CacheKeyPrefix + key, value, cacheEntryOptions); //inclui o novo dado na memoria cache
+
+            if(!database.ContainsKey(key)){
                 database[key] = value;
                 SaveDataToTxt();
                 return "inserted";
             }else{
                 return "key already exists. Try using the update method";
             }
+
+
         }finally{
             mutex.ReleaseMutex(); //libera o mutex pro proximo comando
         }
@@ -49,8 +49,11 @@ class SimpleDB{ //classe do database do programa
     public string Remove(int key){ //metodo remover uma chave no banco de dados (removendo o valor tambem)
         mutex.WaitOne();
 
+        string cacheKey = CacheKeyPrefix + key;
+        cache.Remove(cacheKey);
+
         try{
-            if (database.ContainsKey(key)){
+            if(database.ContainsKey(key)){
                 database.Remove(key);
                 SaveDataToTxt();
                 return "removed";
@@ -66,13 +69,24 @@ class SimpleDB{ //classe do database do programa
         mutex.WaitOne();
 
         try{
-            if (database.ContainsKey(key)){
+            string cacheKey = CacheKeyPrefix + key;
+            var cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) //expira em 10 minutos
+            };
+            cache.Set(cacheKey, value, cacheEntryOptions);
+
+            //atualiza no dicionario do banco de dados
+            if(database.ContainsKey(key)){
                 database[key] = value;
+
                 SaveDataToTxt();
-                return "updated";
+
+                return "Updated successfully";
             }else{
-                return "key not found";
+                return "Key not found";
             }
+
         }finally{
             mutex.ReleaseMutex();
         }
@@ -81,10 +95,27 @@ class SimpleDB{ //classe do database do programa
     public string Search(int key){ //metodo search se uma chave existe no banco de dados
         mutex.WaitOne();
         try{
-            if (database.ContainsKey(key)){
-                return "Found object: " + database[key];
+            
+            string cacheKey = CacheKeyPrefix + key;
+            if(cache.TryGetValue(cacheKey, out var cachedValue)){
+                return "Found object: " + cachedValue;
             }else{
-                return "object key not found";
+                LoadDataFromTxt();
+
+                if(database.ContainsKey(key)){
+
+                    string value = database[key];
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) // Expira em 10 minutos
+                    };
+                    cache.Set(cacheKey, value, cacheEntryOptions);
+
+                    return "Found object in database: " + value;
+                }else{
+                    return "Object key not found";
+                }
             }
         }finally{
             mutex.ReleaseMutex();
