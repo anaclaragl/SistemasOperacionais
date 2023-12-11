@@ -16,7 +16,7 @@ namespace databaseServer{
             Program.keepRunning = false; //deixa falso a variavel que esta rodando o programa
         };
 
-        SimpleDB database = new SimpleDB("simpledb.txt"); //nova instancia do banco de dados
+        SimpleDB database = new SimpleDB(10,"simpledb.txt"); //nova instancia do banco de dados, capacidade de dados é 10
 
         if(args.Length > 0){ //apenas para quando for executar algum comando pelo servidor
             ReadLineArgs(args, database);
