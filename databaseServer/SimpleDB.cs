@@ -4,6 +4,7 @@ using System.IO;
 using databaseServer;
 using MSMQ.Messaging;
 using System.Threading;
+using Microsoft.Extensions.Caching.Memory;
 
 /*CICLO DE FUNCIONAMENTO DO MSMQ
 1. cliente chama um comando
@@ -17,13 +18,18 @@ class SimpleDB{ //classe do database do programa
     private Dictionary<int, string> database; //uso de dicionario para um banco de dados simples
     private string filePath;
     private Mutex mutex;
+
+    private const string CacheKeyPrefix = "DBCache_"; //o prefixo que vem antes de cada dado pra evitar conflito
+    private IMemoryCache cache; //interface que permite a manipulação na memoria cache
     
     public SimpleDB(string fPath){ //metodo construtor
         filePath = fPath;
         mutex = new Mutex();
         LoadDataFromTxt(); //cada vez que o construtor for instanciada, ele coleta a data ja salva no documento
-    }
 
+        cache = new MemoryCache(new MemoryCacheOptions()); //instnacia do memory cache
+    }
+    
     public string Insert(int key, string value){ //metodo inserir no banco de dados
         mutex.WaitOne(); //bloqueia a thread ate receber um sinal
 

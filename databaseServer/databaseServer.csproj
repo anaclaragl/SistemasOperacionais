@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="MSMQ.Messaging" Version="1.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
